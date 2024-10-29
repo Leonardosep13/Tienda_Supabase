@@ -1,48 +1,81 @@
-import React, { Component } from 'react';
-import { View, Text , ScrollView , StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
+import { supabase } from './SupaBase';
 
-export default class DashBoard extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
+const MyComponent = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    render() {
-        return (
-        <View style={Styles.container}>
-            <ScrollView>
-                <View style={Styles.header}>
-                    <Text style={Styles.textHeader}> Bienvenido </Text>
-                </View>
-                
-            </ScrollView>
-            
-        </View>
-        );
-    }
-}
+  useEffect(() => {
+    // Función para obtener datos de la tabla Tienda
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('Tienda') // Consulta la tabla Tienda
+          .select('id, Producto, Cantidad, MarcaProducto, Imagen, Descripcion'); // Especifica las columnas que necesitas
 
-const Styles = StyleSheet.create({
-    container:{
-        flex:1,
-        backgroundColor:"white",
-    },
-    header:{
-        width:"100%",
-        height:"auto",
-        backgroundColor: "#FF9900",
-        padding:"2%"
-    },
-    textHeader:{
-        fontWeight:"bold",
-        fontSize:60,
-        color:"black",
-        fontStyle:"italic",
-    },
-    textUserName:{
-        fontSize: 20,
-        fontWeight:"bold",
-        color:"black"
-    }
-})
+        if (error) throw error;
+        setData(data);
+      } catch (error) {
+        console.log('Error al obtener los datos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <ActivityIndicator size="large" color="#00ff00" />;
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        {data ? (
+          data.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <Text style={styles.title}>{item.Producto}</Text>
+              <Text>Marca: {item.MarcaProducto}</Text>
+              <Text>Cantidad: {item.Cantidad}</Text>
+              <Text>Descripción: {item.Descripcion}</Text>
+              {item.Imagen && (
+                <Image
+                  source={{ uri: item.Imagen }}
+                  style={styles.image}
+                />
+              )}
+            </View>
+          ))
+        ) : (
+          <Text>No se encontraron datos.</Text>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+  },
+  card: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginTop: 10,
+  },
+});
+
+export default MyComponent;
