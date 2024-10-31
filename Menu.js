@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LOGIN from "./Login";
 import DASHBOARD from "./Dashboard"
-
+import DETALLES from "./Detalles"
 export default class Menu extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +19,7 @@ export default class Menu extends Component {
         <Stack.Navigator>
           <Stack.Screen name="LOGIN" component={LOGIN}  options={{ headerShown: false }} />
           <Stack.Screen name="Dashboard" component={DASHBOARD}  options={{ headerShown: false }} />
+          <Stack.Screen name="Detalles" component={DETALLES}  options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     );

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { supabase } from './SupaBase';
 
-const MyComponent = () => {
+const CatalogScreen = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Función para obtener datos de la tabla Tienda
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
-          .from('Tienda') // Consulta la tabla Tienda
-          .select('id, Producto, Cantidad, MarcaProducto, Imagen, Descripcion'); // Especifica las columnas que necesitas
-
+          .from('Tienda')
+          .select('id, Producto, Cantidad, MarcaProducto, Imagen, Descripcion');
         if (error) throw error;
         setData(data);
       } catch (error) {
@@ -22,7 +22,6 @@ const MyComponent = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -33,7 +32,7 @@ const MyComponent = () => {
       <View style={styles.content}>
         {data ? (
           data.map((item) => (
-            <View key={item.id} style={styles.card}>
+            <TouchableOpacity key={item.id} style={styles.card} onPress={() => navigation.navigate('Detalles', { id: item.id })}>
               <Text style={styles.title}>{item.Producto}</Text>
               <Text>Marca: {item.MarcaProducto}</Text>
               <Text>Cantidad: {item.Cantidad}</Text>
@@ -44,7 +43,7 @@ const MyComponent = () => {
                   style={styles.image}
                 />
               )}
-            </View>
+            </TouchableOpacity>
           ))
         ) : (
           <Text>No se encontraron datos.</Text>
@@ -78,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyComponent;
+export default CatalogScreen;
