@@ -51,7 +51,7 @@ export default class Login extends Component {
 
             <View style={{marginTop:50,marginLeft:75,}}>
                 <TextInput style={styles.input}
-                    placeholder="Correo"
+                    placeholder="Codigo"
                     placeholderTextColor="#aaa"
                     onChangeText={correo => this.setState({correo})}
                 >
@@ -60,7 +60,7 @@ export default class Login extends Component {
 
             <View style={{marginTop:40,marginLeft:75,}}>
             <TextInput style={styles.input}
-                    placeholder="Contraseña"
+                    placeholder="Nip"
                     placeholderTextColor="#aaa"
                     secureTextEntry={true}
                     onChangeText={contraseña => this.setState({contraseña})}
